@@ -22,11 +22,11 @@ class Deck:
   
   # Removes a card from the deck
   def remove(self, value):
-    print('removing')
+    # print('removing')
     counter = 0
     for i, card in enumerate(self.cards):
       if (card == value and counter == 0):
-        print('popping', card)
+        # print('popping', card)
         self.cards.pop(i)
         counter+=1
   

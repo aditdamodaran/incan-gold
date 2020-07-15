@@ -25,7 +25,7 @@ def formatCard(card):
     return card
 
 class Stage:
-  def __init__(self, deck, players):
+  def __init__(self, deck, players, printDetail = True, removedHazards = []):
     self.hazards = []
     self.treasure = []
     self.players = players
@@ -37,6 +37,8 @@ class Stage:
     self.playersLeaving = []
     self.artifactsAvailable = False
     self.artifacts = []
+    self.printDetail = printDetail
+    self.removedHazards = removedHazards
   
   def addHazard(self, hazard):
     self.hazards = self.hazards + [hazard]
@@ -45,7 +47,8 @@ class Stage:
   def turn(self, deck):
     # Draw a Card from the Deck
     card = deck.draw()
-    print(formatCard(card))
+    if (self.printDetail):
+      print(formatCard(card))
     self.drawnCards.append(card)
 
     # Check if it's a hazard (and would end the round)
@@ -69,7 +72,8 @@ class Stage:
       # print(shareOfTreasure, remainder)
   
   def runStage(self, deck, strategyMap):
-    print(deck.cards)
+    if (self.printDetail):
+      print(deck.cards)
     
     while (self.numPlayers != 0) and (not self.endedByHazards):
       # Draw from the deck, and appropriate points accordingly
@@ -88,7 +92,8 @@ class Stage:
       # Update the Number of Remaining Players
       # Handle Artifacts and Remainders
       if (self.playersLeaving):
-        print(self.playersLeaving, "are leaving")
+        if (self.printDetail):
+          print(self.playersLeaving, "are leaving")
         self.numPlayers -= len(self.playersLeaving)
       
       # Divy up the remaining treasure for those leaving
@@ -125,10 +130,15 @@ class Stage:
     # Hazard is removed from the deck for future rounds
     if (self.endedByHazards):
       hazardToRemove = self.hazards[-1]
+      if (self.printDetail):
+        print('Round ended by: ', formatCard(hazardToRemove))
+      self.removedHazards.append(hazardToRemove)
       self.deck.remove(hazardToRemove)
 
-    for player in self.players:
-      print(player.name, player.tent)
+    if (self.printDetail):
+      for player in self.players:
+        print(player.name, player.tent)
+    return self.removedHazards
   
     
     
